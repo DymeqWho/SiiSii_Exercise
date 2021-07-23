@@ -11,7 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ParticipantRequest {
 
-    private long id;
     private String participantName;
     private String email;
+
 }
