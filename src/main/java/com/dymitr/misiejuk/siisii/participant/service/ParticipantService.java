@@ -10,6 +10,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -22,7 +25,11 @@ public class ParticipantService {
 
     public void createParticipant(ParticipantRequest participantRequest) {
         ParticipantEntity participantEntity = new ParticipantEntity();
-        settingParticipantEntity(participantRequest, participantEntity);
+
+        if (isEmailRepeat(participantRequest))
+            settingParticipantEntity(participantRequest, participantEntity);
+        else throw new RuntimeException("Podany login już jest zajęty");
+
     }
 
     public ParticipantResponse showParticipant(Long id) {
@@ -33,15 +40,41 @@ public class ParticipantService {
         return participantResponse;
     }
 
-
-
-    private void settingParticipantEntity(ParticipantRequest participantRequest,
-                                          ParticipantEntity participantEntity
+    private void settingParticipantEntity(ParticipantRequest participantRequest, ParticipantEntity participantEntity
     ) {
         participantEntity.setEmail(participantRequest.getEmail());
         participantEntity.setParticipantName(participantRequest.getParticipantName());
-            participantRepository.save(participantEntity);
-            logger.info("Udało się stworzyć " + participantEntity.getParticipantName() + " email: " + participantEntity.getEmail());
+        participantRepository.save(participantEntity);
+        logger.info("Udało się stworzyć " + participantEntity.getParticipantName() + " email: " + participantEntity.getEmail());
+    }
+
+    private boolean isEmailRepeat(ParticipantRequest participantRequest) {
+        List<String> emails = new ArrayList<>();
+        List<String> logins = new ArrayList<>();
+        String email = "";
+        String login = "";
+
+        for (int i = 0; i < participantRepository.count(); i++) {
+            String id = i + 1 + "";
+            ParticipantEntity participantEntityDemo = participantRepository.findById((long) i + 1).orElseThrow(() -> new RuntimeException("there is no such ID " + id));
+            email = participantEntityDemo.getEmail();
+            login = participantEntityDemo.getParticipantName();
+            emails.add(i, email);
+            logins.add(i, login);
+        }
+        logger.info("logins: " + logins + "\n" + "emails: " + emails);
+
+        for (int i = 0; i < emails.size(); i++) {
+            if (emails.get(i).equals(participantRequest.getEmail())) {
+                logger.warn("takie same emaile" + email);
+                return false;
+            }
+            if (logins.get(i).equals(participantRequest.getParticipantName())) {
+                logger.warn("takie same loginy" + login);
+                return false;
+            }
+        }
+        return true;
     }
 
 }
