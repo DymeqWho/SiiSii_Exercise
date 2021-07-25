@@ -1,6 +1,7 @@
 package com.dymitr.misiejuk.siisii.lecture.dao;
 
 import com.dymitr.misiejuk.siisii.participant.dao.ParticipantEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,8 +28,7 @@ public class LectureEntity {
 
     private Long max_capacity;
 
-    private Long min_capacity;
-
+    @JsonIgnore
     @ManyToMany
     @JoinTable(
             name = "participant_enrolled",
@@ -37,4 +37,14 @@ public class LectureEntity {
     )
     private Set<ParticipantEntity> participantEntities = new HashSet<>();
 
+    @Override
+    public String toString() {
+        return "LectureEntity{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", duration='" + duration + '\'' +
+                ", max_capacity=" + max_capacity +
+                ", participantEntities=" + participantEntities +
+                '}';
+    }
 }

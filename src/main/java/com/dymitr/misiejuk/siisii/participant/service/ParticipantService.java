@@ -36,7 +36,9 @@ public class ParticipantService {
         ParticipantResponse participantResponse = new ParticipantResponse();
         participantResponse.setParticipantName(participantRepository.findById(id).orElseThrow().getParticipantName());
         participantResponse.setEmail(participantRepository.findById(id).orElseThrow().getEmail());
-        logger.info("Udało się odczytać " + participantResponse.getParticipantName() + " email: " + participantResponse.getEmail());
+        participantResponse.setLectureEntitySet(participantRepository.findById(id).orElseThrow().getLectureEntitySet());
+        logger.info("Udało się odczytać " + participantResponse.getParticipantName() + " email: "
+                + participantResponse.getEmail() + "lista: " + participantResponse.getLectureEntitySet().toString());
         return participantResponse;
     }
 
@@ -44,6 +46,9 @@ public class ParticipantService {
     ) {
         participantEntity.setEmail(participantRequest.getEmail());
         participantEntity.setParticipantName(participantRequest.getParticipantName());
+//        if (participantEntity.getLectureEntitySet() != null) {
+            participantEntity.setLectureEntitySet(participantEntity.getLectureEntitySet());
+//        }
         participantRepository.save(participantEntity);
         logger.info("Udało się stworzyć " + participantEntity.getParticipantName() + " email: " + participantEntity.getEmail());
     }

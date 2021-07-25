@@ -1,7 +1,6 @@
 package com.dymitr.misiejuk.siisii.lecture.service;
 
 import com.dymitr.misiejuk.siisii.lecture.dao.LectureEntity;
-import com.dymitr.misiejuk.siisii.lecture.dto.LectureResponse;
 import com.dymitr.misiejuk.siisii.repository.LectureRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
