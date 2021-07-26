@@ -8,6 +8,7 @@ Requirements:
 - Postman
 - Web browser
 - H2 database
+
   How to run application:
 1.	Load application with dependencies written in pom.xml file
 2.	Build and run application
