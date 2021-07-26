@@ -1,6 +1,7 @@
 package com.dymitr.misiejuk.siisii.participant.service;
 
 import com.dymitr.misiejuk.siisii.participant.dao.ParticipantEntity;
+import com.dymitr.misiejuk.siisii.participant.dto.ParticipantAllResponse;
 import com.dymitr.misiejuk.siisii.participant.dto.ParticipantRequest;
 import com.dymitr.misiejuk.siisii.participant.dto.ParticipantResponse;
 import com.dymitr.misiejuk.siisii.repository.ParticipantRepository;
@@ -12,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 
 @Service
 @RequiredArgsConstructor
@@ -42,13 +45,38 @@ public class ParticipantService {
         return participantResponse;
     }
 
+    public ParticipantResponse showParticipant(String login) {
+        return showParticipant(findParticipantByLogin(login));
+    }
+
+    public void updateEmail(String login, ParticipantRequest participantRequest) {
+        Long id = findParticipantByLogin(login);
+        ParticipantEntity participantEntity = participantRepository.findById(id).orElseThrow();
+        participantRequest.setParticipantName(participantEntity.getParticipantName());
+        settingParticipantEntity(participantRequest, participantEntity);
+    }
+
+    public ParticipantAllResponse showAllParticipants() {
+        return ParticipantAllResponse.builder()
+                .participantResponseList(participantRepository.findAll().stream()
+                        .map(participantEntity -> ParticipantResponse.builder()
+                                .participantName(participantEntity.getParticipantName())
+                                .email(participantEntity.getEmail())
+                                .build())
+                        .collect(Collectors.toList())).build();
+    }
+
+    private Long findParticipantByLogin(String login) {
+        return participantRepository.findIDByParticipantName(login);
+    }
+
     private void settingParticipantEntity(ParticipantRequest participantRequest, ParticipantEntity participantEntity
     ) {
         participantEntity.setEmail(participantRequest.getEmail());
         participantEntity.setParticipantName(participantRequest.getParticipantName());
-//        if (participantEntity.getLectureEntitySet() != null) {
-            participantEntity.setLectureEntitySet(participantEntity.getLectureEntitySet());
-//        }
+
+        participantEntity.setLectureEntitySet(participantEntity.getLectureEntitySet());
+
         participantRepository.save(participantEntity);
         logger.info("Udało się stworzyć " + participantEntity.getParticipantName() + " email: " + participantEntity.getEmail());
     }

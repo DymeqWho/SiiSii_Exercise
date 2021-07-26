@@ -50,9 +50,11 @@ public class LectureParticipantService {
 //            if (isParticipantAlreadySignedToLecture(lectureId, participantId, participantEntity.getParticipantName()))
 //                lectureRepository.findById(lectureId).orElseThrow().setMax_capacity(lectureRepository.findById(lectureId).orElseThrow().getMax_capacity() - 1);
             LocalDateTime localDateTime = LocalDateTime.now();
-            String emailText = "Reservation " + localDateTime + " to " + participantEntity.getParticipantName() + ", email: " + participantEntity.getEmail() + lectureEntity;
+            String emailText = "Reservation " + localDateTime + " to " + participantEntity.getParticipantName() + ", email: " + participantEntity.getEmail() + " " + lectureEntity;
 
-            sendEmailAsAMockTxt(emailText);
+            String emailAddress = participantEntity.getEmail();
+            sendEmailAsAMockTxt(emailText, emailAddress);
+            logger.info("Email sent to: " + emailAddress);
 
             return lectureRepository.save(lectureEntity);
         } else if (howManyLecturesParticipantIsSignedIn > 3) {
@@ -65,12 +67,12 @@ public class LectureParticipantService {
 //        Files.write(Paths.get("com/dymitr/misiejuk/siisii/service/sended_Email2.txt"), emailContent.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE);
 //    }
 
-    private void sendEmailAsAMockTxt(String emailContent){
-        try{
-            FileWriter fileWriter = new FileWriter("sended_Email2.txt");
+    private void sendEmailAsAMockTxt(String emailContent, String emailAddress) {
+        try {
+            FileWriter fileWriter = new FileWriter(emailAddress + ".txt");
             fileWriter.write(emailContent);
             fileWriter.close();
-        }catch (IOException e){
+        } catch (IOException e) {
             logger.error(e.getMessage());
             e.printStackTrace();
         }
