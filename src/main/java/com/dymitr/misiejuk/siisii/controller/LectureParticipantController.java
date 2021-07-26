@@ -19,8 +19,8 @@ import java.io.IOException;
 public class LectureParticipantController {
     private final LectureParticipantService lectureParticipantService;
 
-    @PutMapping("/api/{participantID}/lecture/{lectureID}")
-    public LectureEntity showEnrolledLectures(@PathVariable Long participantID, @PathVariable Long lectureID) throws IOException {
-        return lectureParticipantService.goToLecture(lectureID, participantID);
+    @PutMapping("/api/{participantName}/{participantEmail}/lecture/{lectureID}")
+    public LectureEntity showEnrolledLectures(@PathVariable String participantName, @PathVariable String participantEmail, @PathVariable Long lectureID) throws IOException {
+        return lectureParticipantService.goToLecture(lectureID, participantName, participantEmail);
     }
 }

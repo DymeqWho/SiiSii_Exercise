@@ -2,6 +2,7 @@ package com.dymitr.misiejuk.siisii.service;
 
 import com.dymitr.misiejuk.siisii.lecture.dao.LectureEntity;
 import com.dymitr.misiejuk.siisii.participant.dao.ParticipantEntity;
+import com.dymitr.misiejuk.siisii.participant.service.ParticipantService;
 import com.dymitr.misiejuk.siisii.repository.LectureRepository;
 import com.dymitr.misiejuk.siisii.repository.ParticipantRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,10 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 
@@ -25,9 +22,11 @@ import java.util.NoSuchElementException;
 public class LectureParticipantService {
     private final ParticipantRepository participantRepository;
     private final LectureRepository lectureRepository;
+    private final ParticipantService participantService;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public LectureEntity goToLecture(Long lectureId, Long participantId) {
+    public LectureEntity goToLecture(Long lectureId, String login, String emailAddress) {
+        Long participantId = participantService.findParticipantByLogin(login);
         ParticipantEntity participantEntity = participantRepository.findById(participantId).orElseThrow(() -> new RuntimeException("No such ID"));
         LectureEntity lectureEntity = lectureRepository.findById(lectureId).orElseThrow(() -> new RuntimeException("No such ID"));
         try {
@@ -50,9 +49,9 @@ public class LectureParticipantService {
 //            if (isParticipantAlreadySignedToLecture(lectureId, participantId, participantEntity.getParticipantName()))
 //                lectureRepository.findById(lectureId).orElseThrow().setMax_capacity(lectureRepository.findById(lectureId).orElseThrow().getMax_capacity() - 1);
             LocalDateTime localDateTime = LocalDateTime.now();
-            String emailText = "Reservation " + localDateTime + " to " + participantEntity.getParticipantName() + ", email: " + participantEntity.getEmail() + " " + lectureEntity;
+            String emailText = "Reservation " + localDateTime + " to " + participantEntity.getParticipantName() + ", email: " + participantEntity.getEmail() + " " + lectureEntity + ". ";
 
-            String emailAddress = participantEntity.getEmail();
+//            String emailAddress = participantEntity.getEmail();
             sendEmailAsAMockTxt(emailText, emailAddress);
             logger.info("Email sent to: " + emailAddress);
 

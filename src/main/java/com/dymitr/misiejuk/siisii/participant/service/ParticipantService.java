@@ -66,7 +66,7 @@ public class ParticipantService {
                         .collect(Collectors.toList())).build();
     }
 
-    private Long findParticipantByLogin(String login) {
+    public Long findParticipantByLogin(String login) {
         return participantRepository.findIDByParticipantName(login);
     }
 
