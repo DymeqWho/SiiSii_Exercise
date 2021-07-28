@@ -62,11 +62,11 @@ f)	If you want to view on what Lectures participant is assigned to you should:
 
 I.	GET http://localhost:8080/api/participant/login/{participantName}
 
-NOTE: {participantLogin} bracket should contain existing login/name of the Participant e.g. “Joe” from a) instruction
+NOTE: {participantName} bracket should contain existing login/name of the Participant e.g. “Joe” from a) instruction
 II.	Then press the SEND button.
 
 g)	You can do the same as point f) but only with ParticipantID
-I.	GET http://localhost:8080/api/participant/login/{participantID}
+I.	GET http://localhost:8080/api/participant/{participantID}
 
 NOTE: {participantID} bracket should contain existing ID of the Participant e.g. “Joe” from a) instruction. You can check the ID of the Participant only in H2 database.
 II.	Then press the SEND button.
